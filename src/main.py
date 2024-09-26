@@ -2,21 +2,39 @@ import pygame
 import sys
 from body import Body
 from vector import Vector
+from math import radians, degrees, sin, cos
 
 # Initialize Pygame
 pygame.init()
 
 # Set up display
-width, height = 800, 600
+width, height = 1000, 1000
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Draw a Circle")
 
 # Define colors
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
+WHITE = (255, 255, 255)
+
+pixels_per_meter = 500
+print(f"the window width is {width/pixels_per_meter:.0f} meters")
+PIXEL_SIZE = 1 / pixels_per_meter  # in meters
 
 
-body = Body(Vector([500, 0]), Vector([0, 0]), Vector([0, 9.8]))
+gravity = 9.8
+Body(Vector([1, 0.5, 0]), Vector([-2, 1, 10]), Vector([0, 0, 0]))
+Body(Vector([1, 0.5, 0]), Vector([2, 2, 10]), Vector([0, 0, 0]))
+Body(Vector([1, 0.5, 0]), Vector([-2, 3, -10]), Vector([0, 0, 0]))
+Body(Vector([1, 0.5, 0]), Vector([2, 4, -10]), Vector([0, 0, 0]))
+
+from random import random
+
+for _ in range(1_000):
+    a = (random() - 1) * 2
+    b = (random() - 1) * 2
+    c = (random() - 1) * 2
+    Body(Vector([1, 0.5, 0]), Vector([a**2, b**2, c**2]), Vector([0, 0, 0]))
 
 # for _ in range(50):
 #     body.timestep(0.1)
@@ -30,16 +48,17 @@ import time
 
 
 def stamp():
-    global elapsed
-    old = stamp
-    stamp = time.time()
-    return stamp - old
+    global stamp_
+    old = stamp_
+    stamp_ = time.time()
+    elapsed = stamp_ - old
+    print(f"fps: {1/elapsed:.0f}")
+    return elapsed
 
 
-stamp = time.time()
-while True:
-    print(stamp)
-    time.sleep(1)
+stamp_ = time.time()
+
+speed = 1
 # Main loop
 while True:
     for event in pygame.event.get():
@@ -50,12 +69,20 @@ while True:
     # Fill the background
     screen.fill(BLACK)
 
-    # Draw a circle
-    center = (width // 2, height // 2)  # Center of the screen
-    radius = 50
-    pygame.draw.circle(screen, RED, body.displacement.vector, radius)
-    time.sleep(0.01)
-    body.timestep(0.01)
-    body.try_bounce()
+    step = stamp()
+
+    for _body in Body.registry:
+        _body.acceleration = Vector(
+            [sin(time.time() * speed) * gravity, cos(time.time() * speed) * gravity, 0]
+        )
+        pygame.draw.circle(
+            screen,
+            WHITE,
+            (_body.displacement * pixels_per_meter).vector[:2],
+            _body.screen_size * pixels_per_meter,
+        )
+        _body.timestep(step)
+        _body.try_bounce()
+
     # Update the display
     pygame.display.flip()

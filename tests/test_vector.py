@@ -27,3 +27,10 @@ def test_add():
     assert (Vector([1, 1]) + Vector([1, 2])).vector == Vector([2, 3]).vector
 
     assert (Vector([5, 7, 9]) + Vector([3, 2, 1])).vector == Vector([8, 9, 10]).vector
+
+
+def test_setter():
+    myvector = Vector([1])
+    myvector.x = 12
+
+    assert myvector.x == 12

@@ -20,6 +20,30 @@ class Vector:
     def len(self) -> int:
         return len(self.vector)
 
+    @property
+    def x(self) -> float:
+        return self.vector[0]
+
+    @property
+    def y(self) -> float:
+        return self.vector[1]
+
+    @property
+    def z(self) -> float:
+        return self.vector[2]
+
+    @x.setter
+    def x(self, x) -> None:
+        self.vector[0] = x
+
+    @y.setter
+    def y(self, y) -> None:
+        self.vector[1] = y
+
+    @z.setter
+    def z(self, z) -> None:
+        self.vector[2] = z
+
     def dot(self, other):
         return sum([x * y for x, y in zip(self.vector, other.vector)])
 

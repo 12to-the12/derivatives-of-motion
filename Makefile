@@ -10,7 +10,7 @@ install:
 run: test
 	.venv/bin/python src/main.py
 
-test: lint
+test:
 	.venv/bin/python -m pytest
 
 lint:
