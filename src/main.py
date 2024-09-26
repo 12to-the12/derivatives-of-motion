@@ -66,7 +66,7 @@ def stamp():
 
 stamp_ = time.time()
 
-speed = 3  # rotation speed
+speed = 0.5  # rotation speed
 # Main loop
 while True:
     for event in pygame.event.get():

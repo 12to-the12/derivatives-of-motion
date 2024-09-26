@@ -3,7 +3,7 @@ from vector import Vector
 
 class Body:
     registry = []
-    compression = 0.95
+    compression = 0.90
 
     def __init__(
         self,
