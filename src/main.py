@@ -86,7 +86,7 @@ while True:
 
         a = cos(time.time() * speed) * gravity
         b = sin(time.time() * speed) * gravity
-        _body.acceleration = Vector([0, a, b])
+        _body.acceleration = Vector([b, a, 0])
 
         depth = _body.displacement.z
         brightness = 1 / (depth + 0.5)
