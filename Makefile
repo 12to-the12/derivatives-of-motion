@@ -5,7 +5,8 @@ default: all
 all: install run
 
 install:
-	setup 3.10 uv
+	python -m venv ./.venv/
+	./.venv/bin/python -m pip install -r requirements.txt
 
 run: test
 	.venv/bin/python src/main.py
@@ -17,4 +18,5 @@ lint:
 	.venv/bin/python -m mypy ./src/main.py
 
 clean:
-	trash {./venv/,./.venv/}
+	rm -rf ./venv
+	rm -rf ./.venv

@@ -3,6 +3,7 @@ from vector import Vector
 
 class Body:
     registry = []
+    compression = 0.95
 
     def __init__(
         self,
@@ -11,7 +12,7 @@ class Body:
         acceleration=None,
         jerk=None,
         time=0,
-        radius=0.01,
+        radius=0.05,
     ):
         Body.registry.append(self)
         self.displacement = displacement
@@ -42,13 +43,12 @@ class Body:
         self.time += time
 
     def bounce(self, dimension):
-        friction = 0.9
-        compression = 0.8
-        mini = 1e-7
         self.velocity.vector[dimension] *= -1
         # print(f"before: {(self.velocity.vector[dimension]):.0f}")
 
-        self.velocity.vector[dimension] = self.velocity.vector[dimension] * compression
+        self.velocity.vector[dimension] = (
+            self.velocity.vector[dimension] * Body.compression
+        )
 
         # if abs(self.velocity.vector[dimension]) < mini:
         #     self.velocity.vector[dimension] = 0
@@ -63,7 +63,7 @@ class Body:
 
     def try_bounce(self):
         # print(self.velocity.x)
-        offset = 0
+        offset = self.radius
         if self.displacement.z > (2 - offset):
             self.bounce(2)
             self.displacement.z = 2 - offset
@@ -93,4 +93,8 @@ class Body:
     @property
     def screen_size(self):
         depth = self.displacement.z
-        return self.radius * (1 / (depth + 0.5))
+        return self.radius * (1 / (depth + 0.2))
+
+    @property
+    def depth(self):
+        return self.displacement.z

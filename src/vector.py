@@ -12,6 +12,9 @@ class Vector:
 
         return mag
 
+    def unitize(self):
+        self = self.unit
+
     @property
     def unit(self):
         return Vector([x / self.mag for x in self.vector])

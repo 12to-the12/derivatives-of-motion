@@ -30,7 +30,7 @@ Body(Vector([1, 0.5, 0]), Vector([2, 4, -10]), Vector([0, 0, 0]))
 
 from random import random
 
-for _ in range(1_000):
+for _ in range(12):
     a = (random() - 1) * 2
     b = (random() - 1) * 2
     c = (random() - 1) * 2
@@ -47,6 +47,14 @@ for _ in range(1_000):
 import time
 
 
+def colorize(x):
+    if x < 0:
+        x = 0
+    if x > 1:
+        x = 1
+    return int(x * 255)
+
+
 def stamp():
     global stamp_
     old = stamp_
@@ -58,7 +66,7 @@ def stamp():
 
 stamp_ = time.time()
 
-speed = 1
+speed = 3  # rotation speed
 # Main loop
 while True:
     for event in pygame.event.get():
@@ -71,18 +79,27 @@ while True:
 
     step = stamp()
 
+    Body.registry = sorted(Body.registry, key=lambda x: x.depth, reverse=True)
     for _body in Body.registry:
-        _body.acceleration = Vector(
-            [sin(time.time() * speed) * gravity, cos(time.time() * speed) * gravity, 0]
-        )
+        _body.timestep(step)
+        _body.try_bounce()
+
+        a = cos(time.time() * speed) * gravity
+        b = sin(time.time() * speed) * gravity
+        _body.acceleration = Vector([0, a, b])
+
+        depth = _body.displacement.z
+        brightness = 1 / (depth + 0.5)
+        brightness = colorize(brightness)
+        color = (brightness, brightness, brightness)
         pygame.draw.circle(
             screen,
-            WHITE,
+            color,
             (_body.displacement * pixels_per_meter).vector[:2],
             _body.screen_size * pixels_per_meter,
         )
-        _body.timestep(step)
-        _body.try_bounce()
+
+    # time.sleep(1e-1)
 
     # Update the display
     pygame.display.flip()
